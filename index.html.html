@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>國語六上（1-12課）特教詞素點讀與自然句自主檢核室</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --highlight: #fef08a;
+      --highlight-border: #f59e0b;
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --breath-short: #059669;
+      --breath-long: #dc2626;
+      --mark-color: #fee2e2;
+      --mark-border: #ef4444;
+      --border-color: #cbd5e1;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: "PingFang TC", "Microsoft JhengHei", "微軟正黑體", sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      margin: 0;
+      padding: 16px 14px 60px;
+      line-height: 2.5;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* 頂部 1-12 課導覽切換區 */
+    .lesson-nav-card {
+      background: var(--card-bg);
+      padding: 14px 18px;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      margin-bottom: 16px;
+      border: 2px solid var(--border-color);
+    }
+
+    .nav-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #334155;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 8px;
+    }
+
+    .lesson-btn {
+      background: #f1f5f9;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .lesson-btn:hover {
+      background: #e2e8f0;
+      border-color: #94a3b8;
+    }
+
+    .lesson-btn.active {
+      background: #2563eb;
+      border-color: #1d4ed8;
+      color: #ffffff;
+      font-weight: 800;
+      box-shadow: 0 3px 8px rgba(37,99,235,0.25);
+    }
+
+    .lesson-btn .btn-num {
+      display: block;
+      font-size: 0.75rem;
+      opacity: 0.9;
+    }
+    .lesson-btn .btn-title {
+      display: block;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 操作與模式面板 */
+    header {
+      background: var(--card-bg);
+      padding: 16px 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      border: 2px solid var(--border-color);
+    }
+
+    .header-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .header-title h1 {
+      font-size: 1.45rem;
+      margin: 0;
+      color: #0f172a;
+    }
+
+    /* 模式切換按鈕 */
+    .mode-tabs {
+      display: flex;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 12px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 9px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      background: transparent;
+      color: #475569;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-top: 6px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      font-size: 1.05rem;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-play {
+      background-color: var(--primary);
+      color: white;
+    }
+    .btn-play:hover { background-color: #1d4ed8; }
+
+    .btn-stop {
+      background-color: #f1f5f9;
+      color: #475569;
+      border: 1px solid #94a3b8;
+    }
+    .btn-stop:hover { background-color: #e2e8f0; }
+
+    .btn-clear {
+      background-color: #fff1f2;
+      color: #e11d48;
+      border: 1px solid #fecdd3;
+    }
+    .btn-clear:hover { background-color: #ffe4e6; }
+
+    .speed-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    .speed-control input[type="range"] {
+      width: 105px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* 文本區域：一句一行排版 */
+    .reading-board {
+      background: var(--card-bg);
+      padding: 30px 26px;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      border: 2px solid var(--border-color);
+      min-height: 400px;
+    }
+
+    /* 一句一行完整句子容器 */
+    .sentence-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      transition: background 0.15s;
+    }
+    .sentence-row:hover {
+      background: #f8fafc;
+    }
+
+    /* 詞素方塊按鈕 [ 詞素 ] */
+    .chunk {
+      display: inline-flex;
+      align-items: center;
+      font-size: 1.68rem;
+      letter-spacing: 1.5px;
+      padding: 2px 7px;
+      margin: 2px 4px;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.12s ease;
+      color: #1e293b;
+      position: relative;
+    }
+
+    /* 學習模式：詞素方塊加強 */
+    body.mode-learn .chunk:hover {
+      background-color: #e0f2fe;
+      border-color: var(--primary);
+    }
+
+    /* 學習模式：核心圈詞標記 */
+    body.mode-learn .chunk.key-vocab {
+      font-weight: 900;
+      color: #000000;
+      border-color: #f59e0b;
+      background-color: #fffbeb;
+      text-decoration: underline;
+      text-decoration-color: #f59e0b;
+      text-decoration-thickness: 3px;
+      text-underline-offset: 6px;
+    }
+
+    /* 追焦朗讀發光狀態 */
+    .chunk.active {
+      background-color: var(--highlight) !important;
+      color: #000000 !important;
+      border-color: var(--highlight-border) !important;
+      transform: scale(1.08);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.14);
+      z-index: 10;
+    }
+
+    /* 換氣記號 */
+    .breath {
+      font-weight: 900;
+      font-size: 1.35rem;
+      padding: 0 6px;
+      user-select: none;
+      display: inline-block;
+    }
+    .breath-short { color: var(--breath-short); }
+    .breath-long { color: var(--breath-long); font-size: 1.55rem; }
+
+    /* ===== 自我檢核測驗模式樣式（完全無視覺提示） ===== */
+    body.mode-test .breath {
+      display: none !important; /* 隱藏所有換氣記號 */
+    }
+
+    body.mode-test .chunk.key-vocab {
+      font-weight: normal !important; /* 移除粗體 */
+      text-decoration: none !important; /* 移除底線 */
+      background: #f8fafc !important;
+      border-color: #cbd5e1 !important;
+    }
+
+    body.mode-test .chunk {
+      letter-spacing: 1.2px;
+      border: 1.5px solid #e2e8f0;
+    }
+
+    /* 標記不會唸的生字記號樣式 */
+    .chunk.marked {
+      background-color: var(--mark-color) !important;
+      color: #991b1b !important;
+      border: 2px dashed var(--mark-border) !important;
+    }
+
+    .chunk.marked::after {
+      content: "❓";
+      font-size: 0.85rem;
+      position: absolute;
+      top: -12px;
+      right: -8px;
+    }
+
+    /* 檢核結果與複習清單區 */
+    .review-panel {
+      margin-top: 24px;
+      background: #fff;
+      border: 2px solid #fed7aa;
+      border-radius: 16px;
+      padding: 20px;
+      display: none;
+    }
+
+    .review-panel.show {
+      display: block;
+    }
+
+    .review-panel h3 {
+      margin: 0 0 10px 0;
+      color: #c2410c;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .marked-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .review-word-btn {
+      background: #ffedd5;
+      border: 1.5px solid #fb923c;
+      color: #9a3412;
+      font-size: 1.25rem;
+      font-weight: bold;
+      padding: 6px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .review-word-btn:hover {
+      background: #fed7aa;
+      transform: translateY(-2px);
+    }
+
+    /* 特教指引卡 */
+    .tips-card {
+      margin-top: 20px;
+      background: #eff6ff;
+      border-left: 5px solid var(--primary);
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      color: #1e3a8a;
+      line-height: 1.8;
+    }
+    .tips-card strong { color: #1e40af; }
+  </style>
+</head>
+<body class="mode-learn">
+
+<div class="container">
+
+  <!-- 1-12 課大按鈕導覽列 -->
+  <section class="lesson-nav-card">
+    <div class="nav-title">📚 請點選課次進入唸讀（第 1 課 ～ 第 12 課）：</div>
+    <div class="lesson-grid" id="lessonGrid">
+      <!-- 由 JS 動態生成 12 課按鈕 -->
+    </div>
+  </section>
+
+  <!-- 操作面板 -->
+  <header>
+    <div class="header-top">
+      <div class="header-title">
+        <h1 id="lessonHeaderTitle">🏃 第 1 課《跑道》</h1>
+      </div>
+
+      <!-- 模式切換按鈕 -->
+      <div class="mode-tabs">
+        <button class="tab-btn active" id="tabLearn" onclick="switchMode('learn')">📖 學習模式（詞素方塊・提示）</button>
+        <button class="tab-btn" id="tabTest" onclick="switchMode('test')">📝 自我檢核（無提示・做記號）</button>
+      </div>
+    </div>
+
+    <div class="controls-row">
+      <div class="btn-group">
+        <button class="btn btn-play" id="btnPlay">▶ 0.5x 全文連貫朗讀</button>
+        <button class="btn btn-stop" id="btnStop">⏹ 停止</button>
+        <button class="btn btn-clear" id="btnClearMarks" style="display:none;" onclick="clearAllMarks()">🔄 清除所有記號</button>
+      </div>
+
+      <div class="speed-control">
+        <label for="speedRange">語速：</label>
+        <input type="range" id="speedRange" min="0.4" max="1.0" step="0.05" value="0.5">
+        <span id="speedVal">0.50x</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 點讀文章主體（一句一行自然閱讀排版） -->
+  <main class="reading-board" id="readingBoard">
+    <!-- 由 JS 動態渲染各課自然句子 -->
+  </main>
+
+  <!-- 檢核模式：卡關生字複習面板 -->
+  <section class="review-panel" id="reviewPanel">
+    <h3>🔍 我做記號的詞素（點擊直接聽正確發音）：</h3>
+    <p style="margin: 4px 0 12px; color: #7c2d12; font-size: 0.95rem;">
+      太棒了！你完成了自我唸讀檢核。請點擊下方橘色按鈕，聽聽看剛才不確定的字詞怎麼唸：
+    </p>
+    <div class="marked-list" id="markedList">
+      <!-- 動態列出做記號的詞 -->
+    </div>
+  </section>
+
+  <!-- 特教指讀指導與破音字提醒欄 -->
+  <div class="tips-card" id="lessonTips">
+    <!-- 動態注入該課特教指讀與破音字提示 -->
+  </div>
+
+</div>
+
+<script>
+  // 1-12 課完整資料集：一句一行結構、最小詞素切塊 [ 詞素 ] 與破音字正音
+  const allLessons = [
+    {
+      id: 1,
+      title: "跑道",
+      icon: "🏃",
+      tips: "<strong>💡 本課重點與破音字正音：</strong><br>• <strong>為</strong>自己、也<strong>為</strong>班級（ㄨㄟˋ）：表示替、為了，讀四聲。<br>• <strong>興</strong>奮（ㄒㄧㄥ）：振奮激動讀一聲。<br>• 緊張<strong>得</strong>心臟（˙ㄉㄜ）：動後程度補語讀輕聲。<br>• <strong>特教提示</strong>：符合自然文章情境（一句一行），遇到粗體重點詞素（個人得失、榮譽、鬥志）稍加重聲音，手指依方塊輕敲桌面。",
+      sentences: [
+        {
+          units: [
+            { chunks: [{ t: "各就各位──" }], breath: "//", tts: "各就各位" }
+          ]
+        },
+        {
+          units: [
+            { chunks: [{ t: "此時，" }, { t: "政彬", key: true }, { t: "已經" }, { t: "有所" }, { t: "領悟：", key: true }], breath: "/" },
+            { chunks: [{ t: "「對！" }, { t: "我應該" }, { t: "放下" }, { t: "個人", key: true }, { t: "得失，", key: true }], breath: "/" },
+            { chunks: [{ t: "為自己，" }, { t: "也為" }, { t: "班級的" }, { t: "榮譽", key: true }, { t: "努力" }, { t: "向前。」" }], breath: "//" }
+          ],
+          tts: "此時，政彬已經有所領悟：對！我應該放下個人得失，為自己，也為班級的榮譽努力向前。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "政彬", key: true }, { t: "如同" }, { t: "面對" }, { t: "強敵的" }, { t: "英勇", key: true }, { t: "戰士，", key: true }], breath: "/" },
+            { chunks: [{ t: "全身" }, { t: "充滿" }, { t: "力量" }, { t: "和" }, { t: "鬥志。", key: true }], breath: "//" }
+          ],
+          tts: "政彬如同面對強敵的英勇戰士，全身充滿力量和鬥志。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "當" }, { t: "發令槍", key: true }, { t: "一響，" }], breath: "/" },
+            { chunks: [{ t: "政彬", key: true }, { t: "就像" }, { t: "獵豹般", key: true }, { t: "向前" }, { t: "衝刺，", key: true }], breath: "/" },
+            { chunks: [{ t: "很快" }, { t: "就" }, { t: "繞過彎道，" }, { t: "交棒" }, { t: "給" }, { t: "子強。" }], breath: "//" }
+          ],
+          tts: "當發令槍一響，政彬就像獵豹般向前衝刺，很快就繞過彎道，交棒給子強。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "當" }, { t: "政彬", key: true }, { t: "趕到" }, { t: "終點" }, { t: "附近時，" }], breath: "/" },
+            { chunks: [{ t: "第三棒的" }, { t: "家豪，" }, { t: "已經" }, { t: "交棒" }, { t: "給" }, { t: "名揚了。" }], breath: "//" }
+          ],
+          tts: "當政彬趕到終點附近時，第三棒的家豪，已經交棒給名揚了。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "這時" }, { t: "加油聲", key: true }, { t: "四起，" }], breath: "/" },
+            { chunks: [{ t: "只見" }, { t: "名揚" }, { t: "和對手" }, { t: "不相上下、", key: true }, { t: "勝負難分。", key: true }], breath: "//" }
+          ],
+          tts: "這時加油聲四起，只見名揚和對手不相上下、勝負難分。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "政彬", key: true }, { t: "緊張得" }, { t: "心臟" }, { t: "幾乎" }, { t: "要跳出來，" }], breath: "/" },
+            { chunks: [{ t: "他看到" }, { t: "名揚的臉" }, { t: "因" }, { t: "奮力", key: true }, { t: "而" }, { t: "扭曲著，", key: true }], breath: "/" },
+            { chunks: [{ t: "並在" }, { t: "瞬間", key: true }, { t: "超前" }, { t: "其他選手。" }], breath: "//" }
+          ],
+          tts: "政彬緊張得心臟幾乎要跳出來，他看到名揚的臉因奮力而扭曲著，並在瞬間超前其他選手。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "最後，" }, { t: "十公尺……" }, { t: "五公尺……" }, { t: "終點！" }], breath: "//", tts: "最後，十公尺，五公尺，終點！" }
+          ]
+        },
+        {
+          units: [
+            { chunks: [{ t: "政彬", key: true }, { t: "再也" }, { t: "壓抑不住" }, { t: "興奮的", key: true }, { t: "情緒，" }], breath: "/" },
+            { chunks: [{ t: "猛然", key: true }, { t: "衝向前去" }, { t: "抱住" }, { t: "名揚，" }], breath: "/" },
+            { chunks: [{ t: "忘形的" }, { t: "喊著：" }, { t: "「你贏了！" }, { t: "你贏了！」" }], breath: "//" }
+          ],
+          tts: "政彬再也壓抑不住興奮的情緒，猛然衝向前去抱住名揚，忘形的喊著：你贏了！你贏了！"
+        },
+        {
+          units: [
+            { chunks: [{ t: "名揚", key: true }, { t: "愣了一下，", key: true }], breath: "/" },
+            { chunks: [{ t: "隨即" }, { t: "也" }, { t: "抱著" }, { t: "政彬，", key: true }], breath: "/" },
+            { chunks: [{ t: "喘著氣" }, { t: "大叫：" }, { t: "「我們" }, { t: "贏了！" }, { t: "我們" }, { t: "終於" }, { t: "贏了！」" }], breath: "//" }
+          ],
+          tts: "名揚愣了一下，隨即也抱著政彬，喘著氣大叫：我們贏了！我們終於贏了！"
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: "朱子治家格言選",
+      icon: "📜",
+      tips: "<strong>💡 本課重點與破音字正音：</strong><br>• <strong>毋</strong>（ㄨˊ，同無）臨渴而掘井。<br>• <strong>飲</strong>（ㄧㄣˇ）食只要節制。<br>• <strong>切</strong>（ㄑㄧㄝˋ）記得意忘形：務必讀四聲。<br>• <strong>特教提示</strong>：一句一行對仗工整，每讀一個詞素方塊搭配輕敲桌面，建立穩定拍點。",
+      sentences: [
+        {
+          units: [
+            { chunks: [{ t: "古人說：" }], breath: "/" },
+            { chunks: [{ t: "宜" }, { t: "未雨" }, { t: "而" }, { t: "綢繆，", key: true }], breath: "/" },
+            { chunks: [{ t: "毋" }, { t: "臨渴", key: true }, { t: "而" }, { t: "掘井。", key: true }], breath: "//" }
+          ],
+          tts: "古人說：宜未雨而綢繆，毋臨渴而掘井。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "意思是：" }], breath: "/" },
+            { chunks: [{ t: "在" }, { t: "下雨" }, { t: "之前，" }, { t: "就要" }, { t: "先把" }, { t: "房屋" }, { t: "修補好；" }], breath: "//" },
+            { chunks: [{ t: "不要" }, { t: "等到" }, { t: "口渴了，" }, { t: "才" }, { t: "想辦法" }, { t: "去挖井。" }], breath: "//" }
+          ],
+          tts: "意思是：在下雨之前，就要先把房屋修補好；不要等到口渴了，才想辦法去挖井。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "日常生活裡，" }, { t: "使用的" }, { t: "器具", key: true }, { t: "只要" }, { t: "乾淨整潔，" }], breath: "//" },
+            { chunks: [{ t: "樸實的" }, { t: "瓦缶，", key: true }], breath: "/" },
+            { chunks: [{ t: "比" }, { t: "昂貴的" }, { t: "金玉", key: true }, { t: "更實用；" }], breath: "//" }
+          ],
+          tts: "日常生活裡，使用的器具只要乾淨整潔，樸實的瓦缶，比昂貴的金玉更實用；"
+        },
+        {
+          units: [
+            { chunks: [{ t: "飲食" }, { t: "只要" }, { t: "節制精緻，" }, { t: "自己種的" }, { t: "蔬菜，" }], breath: "//" },
+            { chunks: [{ t: "也比" }, { t: "豪華的" }, { t: "珍饈", key: true }, { t: "美味。" }], breath: "//" }
+          ],
+          tts: "飲食只要節制精緻，自己種的蔬菜，也比豪華的珍饈美味。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "給予" }, { t: "別人" }, { t: "恩惠，", key: true }, { t: "不要" }, { t: "總是" }, { t: "記在心上；" }], breath: "//" },
+            { chunks: [{ t: "接受" }, { t: "別人的幫助，" }, { t: "絕對" }, { t: "不能忘記。" }], breath: "//" }
+          ],
+          tts: "給予別人恩惠，不要總是記在心上；接受別人的幫助，絕對不能忘記。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "做人做事" }, { t: "要" }, { t: "留有餘地，", key: true }], breath: "//" },
+            { chunks: [{ t: "順利" }, { t: "成功時，" }], breath: "/" },
+            { chunks: [{ t: "切記" }, { t: "不要" }, { t: "得意忘形。" }, { t: "懂得" }, { t: "收斂", key: true }, { t: "脾氣" }, { t: "與欲望，" }], breath: "/" },
+            { chunks: [{ t: "才能" }, { t: "展現" }, { t: "真正的智慧。" }], breath: "//" }
+          ],
+          tts: "做人做事要留有餘地，順利成功時，切記不要得意忘形。懂得收斂脾氣與欲望，才能展現真正的智慧。"
+        }
+      ]
+    },
+    {
+      id: 3,
+      title: "談遇見更好的自己",
+      icon: "🌟",
+      tips: "<strong>💡 本課重點與破音字正音：</strong><br>• 多做多<strong>得</strong>（ㄉㄜˊ）：獲得讀二聲。<br>• <strong>磨</strong>（ㄇㄛˊ）練成長。<br>• 遇到<strong>難</strong>（ㄋㄢˊ）關。<br>• <strong>特教提示</strong>：依照「首先、其次、最後」詞素序列，邊指讀邊數 1、2、3，強化文章架構。",
+      sentences: [
+        {
+          units: [
+            { chunks: [{ t: "要遇見" }, { t: "更好的自己，" }], breath: "/" },
+            { chunks: [{ t: "其實" }, { t: "並不困難。" }], breath: "//" }
+          ],
+          tts: "要遇見更好的自己，其實並不困難。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "首先，" }, { t: "我們可以" }, { t: "找出" }, { t: "自己的" }, { t: "優勢，", key: true }], breath: "//" },
+            { chunks: [{ t: "設定好" }, { t: "目標，" }], breath: "/" },
+            { chunks: [{ t: "一步一腳印，", key: true }], breath: "//" },
+            { chunks: [{ t: "不" }, { t: "驕傲自滿，" }], breath: "/" },
+            { chunks: [{ t: "穩健踏實的", key: true }, { t: "向前進；" }], breath: "//" }
+          ],
+          tts: "首先，我們可以找出自己的優勢，設定好目標，一步一腳印，不驕傲自滿，穩健踏實的向前進；"
+        },
+        {
+          units: [
+            { chunks: [{ t: "其次，" }, { t: "可以學習" }, { t: "「多做" }, { t: "多得」的", key: true }, { t: "態度，" }], breath: "//" },
+            { chunks: [{ t: "在" }, { t: "每一次的" }, { t: "付出中，" }], breath: "/" },
+            { chunks: [{ t: "磨練", key: true }, { t: "成長；" }], breath: "//" }
+          ],
+          tts: "其次，可以學習多做多得的態度，在每一次的付出中，磨練成長；"
+        },
+        {
+          units: [
+            { chunks: [{ t: "最後，" }, { t: "在" }, { t: "前行的" }, { t: "路途上，" }], breath: "//" },
+            { chunks: [{ t: "即便" }, { t: "遇到難關，" }], breath: "/" },
+            { chunks: [{ t: "也要" }, { t: "嘗試" }, { t: "解決問題，" }], breath: "//" },
+            { chunks: [{ t: "學習" }, { t: "在" }, { t: "困難中" }, { t: "找答案，" }], breath: "/" },
+            { chunks: [{ t: "讓" }, { t: "今天的自己，" }, { t: "超越" }, { t: "昨天的自己。" }], breath: "//" }
+          ],
+          tts: "最後，在前行的路途上，即便遇到難關，也要嘗試解決問題，學習在困難中找答案，讓今天的自己，超越昨天的自己。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "因為" }, { t: "耕耘", key: true }, { t: "與收穫，" }], breath: "/" },
+            { chunks: [{ t: "往往" }, { t: "不在" }, { t: "同一個季節，" }], breath: "//" },
+            { chunks: [{ t: "中間" }, { t: "隔著" }, { t: "一段時間，" }], breath: "/" },
+            { chunks: [{ t: "名為" }, { t: "持之以恆。", key: true }], breath: "//" }
+          ],
+          tts: "因為耕耘與收穫，往往不在同一個季節，中間隔著一段時間，名為持之以恆。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "只要" }, { t: "每天" }, { t: "累積一點點，" }], breath: "/" },
+            { chunks: [{ t: "日積月累", key: true }, { t: "下來，" }], breath: "//" },
+            { chunks: [{ t: "我們" }, { t: "都能" }, { t: "綻放" }, { t: "卓越的", key: true }, { t: "光芒！" }], breath: "//" }
+          ],
+          tts: "只要每天累積一點點，日積月累下來，我們都能綻放卓越的光芒！"
+        }
+      ]
+    },
+    {
+      id: 4,
+      title: "臺灣美食詩選",
+      icon: "🍜",
+      tips: "<strong>💡 本課重點與破音字正音：</strong><br>• 油<strong>炸</strong>（ㄓㄚˊ）溫潤：油烹讀二聲 ㄓㄚˊ。<br>• <strong>華</strong>（ㄏㄨㄚˊ）燈初上。<br>• <strong>特教提示</strong>：單行完整句清楚排列食材與動作（磨漿、製皮、竹筍、切丁），提升詩歌解碼流暢度。",
+      sentences: [
+        {
+          units: [
+            { chunks: [{ t: "雪白的" }, { t: "在來米漿，", key: true }, { t: "沿著" }, { t: "滾熱的" }, { t: "鼎邊，" }], breath: "/" },
+            { chunks: [{ t: "緩緩" }, { t: "滑行。" }], breath: "//" }
+          ],
+          tts: "雪白的在來米漿，沿著滾熱的鼎邊，緩緩滑行。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "守候的" }, { t: "目光，" }], breath: "/" },
+            { chunks: [{ t: "與" }, { t: "味蕾" }, { t: "相遇，" }], breath: "//" },
+            { chunks: [{ t: "山珍海味", key: true }, { t: "擠在" }, { t: "這小小的圓，" }], breath: "/" },
+            { chunks: [{ t: "相遇" }, { t: "華燈初上", key: true }, { t: "的夜色。" }], breath: "//" }
+          ],
+          tts: "守候的目光，與味蕾相遇，山珍海味擠在這小小的圓，相遇華燈初上的夜色。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "滾滾的" }, { t: "洪水之後，" }, { t: "晒乾的" }, { t: "地瓜，" }], breath: "//" },
+            { chunks: [{ t: "包覆著" }, { t: "救命的" }, { t: "恩情。" }], breath: "//" }
+          ],
+          tts: "滾滾的洪水之後，晒乾的地瓜，包覆著救命的恩情。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "磨漿" }, { t: "製皮，" }, { t: "竹筍" }, { t: "切丁，" }], breath: "//" },
+            { chunks: [{ t: "後腿肉" }, { t: "醃製", key: true }, { t: "攪拌，" }], breath: "/" },
+            { chunks: [{ t: "層層的" }, { t: "相遇，" }, { t: "在" }, { t: "高溫" }, { t: "水氣。" }], breath: "//" }
+          ],
+          tts: "磨漿製皮，竹筍切丁，後腿肉醃製攪拌，層層的相遇，在高溫水氣。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "清蒸", key: true }, { t: "簡單，" }], breath: "/" },
+            { chunks: [{ t: "油炸", key: true }, { t: "溫潤，" }], breath: "//" },
+            { chunks: [{ t: "一顆顆" }, { t: "大大小小，" }], breath: "/" },
+            { chunks: [{ t: "一個個" }, { t: "晶瑩透亮。", key: true }], breath: "//" }
+          ],
+          tts: "清蒸簡單，油炸溫潤，一顆顆大大小小，一個個晶瑩透亮。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "每一口" }, { t: "美食，" }, { t: "都蘊含著" }, { t: "土地的" }, { t: "養分，" }], breath: "//" },
+            { chunks: [{ t: "與" }, { t: "人們" }, { t: "代代相傳的" }, { t: "溫情。" }], breath: "//" }
+          ],
+          tts: "每一口美食，都蘊含著土地的養分，與人們代代相傳的溫情。"
+        }
+      ]
+    },
+    {
+      id: 5,
+      title: "最好的味決禮物",
+      icon: "🥞",
+      tips: "<strong>💡 本課重點與破音字正音：</strong><br>• <strong>倒</strong>（ㄉㄠˋ）進杯中：傾注液體讀四聲。<br>• 舔<strong>得</strong>（˙ㄉㄜ）乾淨：輕聲得。<br>• 迫不<strong>及</strong>（ㄐㄧˊ）待。<br>• <strong>特教提示</strong>：在完整句子中，結合生活料理動作加深字詞記憶。",
+      sentences: [
+        {
+          units: [
+            { chunks: [{ t: "我們" }, { t: "親手" }, { t: "將新鮮的" }, { t: "鳳梨切塊，" }], breath: "/" },
+            { chunks: [{ t: "放進" }, { t: "果汁機裡" }, { t: "打碎。" }], breath: "//" }
+          ],
+          tts: "我們親手將新鮮的鳳梨切塊，放進果汁機裡打碎。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "當" }, { t: "金黃色的" }, { t: "汁液，" }, { t: "與" }, { t: "綿密的", key: true }, { t: "泡沫，" }], breath: "//" },
+            { chunks: [{ t: "倒進" }, { t: "杯中，" }], breath: "/" },
+            { chunks: [{ t: "散發出" }, { t: "陣陣" }, { t: "誘人的", key: true }, { t: "香氣。" }], breath: "//" }
+          ],
+          tts: "當金黃色的汁液，與綿密的泡沫，倒進杯中，散發出陣陣誘人的香氣。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "孩子們" }, { t: "迫不及待地", key: true }, { t: "品嘗，" }, { t: "連" }, { t: "杯底" }, { t: "殘餘的", key: true }, { t: "沫汁，" }], breath: "//" },
+            { chunks: [{ t: "都" }, { t: "舔得" }, { t: "乾乾淨淨。" }], breath: "//" }
+          ],
+          tts: "孩子們迫不及待地品嘗，連杯底殘餘的沫汁，都舔得乾乾淨淨。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "這" }, { t: "不只是" }, { t: "一杯果汁，" }, { t: "更是" }, { t: "用心體會，" }], breath: "//" },
+            { chunks: [{ t: "自己" }, { t: "動手" }, { t: "做料理的" }, { t: "樂趣。" }], breath: "//" }
+          ],
+          tts: "這不只是一杯果汁，更是用心體會，自己動手做料理的樂趣。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "從" }, { t: "備料、", key: true }, { t: "切塊" }, { t: "到" }, { t: "分享，" }], breath: "/" },
+            { chunks: [{ t: "大家" }, { t: "在" }, { t: "合作中" }, { t: "交流笑聲。" }], breath: "//" }
+          ],
+          tts: "從備料、切塊到分享，大家在合作中交流笑聲。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "這份" }, { t: "純粹而美好的", key: true }, { t: "口感，" }, { t: "以及" }, { t: "共同創造的" }, { t: "回憶，" }], breath: "//" },
+            { chunks: [{ t: "就是" }, { t: "給孩子" }, { t: "最好的" }, { t: "味覺禮物。", key: true }], breath: "//" }
+          ],
+          tts: "這份純粹而美好的口感，以及共同創造的回憶，就是給孩子最好的味覺禮物。"
+        }
+      ]
+    },
+    {
+      id: 6,
+      title: "珍珠奶茶",
+      icon: "🧋",
+      tips: "<strong>💡 本課重點與破音字正音：</strong><br>• 風<strong>靡</strong>（ㄇㄧˇ）：流行如風吹草伏讀三聲。<br>• Q彈有<strong>勁</strong>（ㄐㄧㄣˋ）：四聲嚼勁。<br>• <strong>特教提示</strong>：讀到「[Q彈有勁的] [粉圓]」時引導學生比出彈性手勢，加深動覺表徵。",
+      sentences: [
+        {
+          units: [
+            { chunks: [{ t: "煮熟的" }, { t: "粉圓" }, { t: "圓潤光亮，", key: true }], breath: "/" },
+            { chunks: [{ t: "就像" }, { t: "一顆顆" }, { t: "黑色的珍珠。" }], breath: "//" }
+          ],
+          tts: "煮熟的粉圓圓潤光亮，就像一顆顆黑色的珍珠。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "當它們" }, { t: "浸泡在，" }, { t: "香濃的" }, { t: "牛奶" }, { t: "與紅茶中，" }], breath: "//" },
+            { chunks: [{ t: "輕輕" }, { t: "搖晃，" }], breath: "/" },
+            { chunks: [{ t: "便" }, { t: "交織出", key: true }, { t: "迷人的風味。" }], breath: "//" }
+          ],
+          tts: "當它們浸泡在，香濃的牛奶與紅茶中，輕輕搖晃，便交織出迷人的風味。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "吸一口，" }, { t: "Q彈有勁的", key: true }, { t: "粉圓，" }], breath: "//" },
+            { chunks: [{ t: "與" }, { t: "香甜的" }, { t: "奶茶，" }, { t: "在" }, { t: "口中碰撞，" }], breath: "//" },
+            { chunks: [{ t: "帶來" }, { t: "滿滿的" }, { t: "幸福感。" }], breath: "//" }
+          ],
+          tts: "吸一口，Q彈有勁的粉圓，與香甜的奶茶，在口中碰撞，帶來滿滿的幸福感。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "這杯" }, { t: "源自臺灣的" }, { t: "美味，" }, { t: "結合了" }, { t: "茶香" }, { t: "與" }, { t: "珍珠口感，" }], breath: "//" },
+            { chunks: [{ t: "展現了" }, { t: "飲食文化中，" }, { t: "驚人的" }, { t: "創意" }, { t: "與" }, { t: "包容。", key: true }], breath: "//" }
+          ],
+          tts: "這杯源自臺灣的美味，結合了茶香與珍珠口感，展現了飲食文化中，驚人的創意與包容。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "從" }, { t: "街邊小店，" }, { t: "走進" }, { t: "國際都市，", key: true }], breath: "//" },
+            { chunks: [{ t: "這顆" }, { t: "小小的珍珠，" }, { t: "成為" }, { t: "風靡全球的", key: true }, { t: "特有符號。" }], breath: "//" }
+          ],
+          tts: "從街邊小店，走進國際都市，這顆小小的珍珠，成為風靡全球的特有符號。"
+        }
+      ]
+    },
+    {
+      id: 7,
+      title: "大小剛好的鞋子",
+      icon: "👟",
+      tips: "<strong>💡 本課重點與破音字正音：</strong><br>• <strong>夾</strong>（ㄐㄧㄚˊ）腳拖：教育部審定音讀二聲。<br>• 溼<strong>答</strong>（ㄉㄚ）答：疊字形容詞讀第一聲。<br>• <strong>特教提示</strong>：「[我這才] [恍然大悟]」切開詞素，讓學生清楚理解「突然明白了」的意涵。",
+      sentences: [
+        {
+          units: [
+            { chunks: [{ t: "最近" }, { t: "仰光" }, { t: "進入了雨季，" }, { t: "我在" }, { t: "前往會議的" }, { t: "路上，" }], breath: "//" },
+            { chunks: [{ t: "看見" }, { t: "路人" }, { t: "腳上的拖鞋，" }, { t: "忽然想起" }, { t: "多年前的" }, { t: "往事。" }], breath: "//" }
+          ],
+          tts: "最近仰光進入了雨季，我在前往會議的路上，看見路人腳上的拖鞋，忽然想起多年前的往事。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "在緬甸，" }, { t: "大家" }, { t: "平時" }, { t: "都穿著" }, { t: "夾腳拖。", key: true }], breath: "//" },
+            { chunks: [{ t: "朋友" }, { t: "笑著" }, { t: "跟我解釋：" }], breath: "/" },
+            { chunks: [{ t: "「我們緬甸" }, { t: "雨季長，" }], breath: "//" },
+            { chunks: [{ t: "要是" }, { t: "拖鞋" }, { t: "比腳大，" }, { t: "每走一步，" }], breath: "//" },
+            { chunks: [{ t: "就會" }, { t: "濺起", key: true }, { t: "地上的雨水，" }, { t: "把衣服" }, { t: "弄得" }, { t: "溼答答。」", key: true }], breath: "//" }
+          ],
+          tts: "在緬甸，大家平時都穿著夾腳拖。朋友笑著跟我解釋：我們緬甸雨季長，要是拖鞋比腳大，每走一步，就會濺起地上的雨水，把衣服弄得溼答答。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "我這才" }, { t: "恍然大悟，", key: true }], breath: "/" },
+            { chunks: [{ t: "原來" }, { t: "當地人" }, { t: "選擇小一號的鞋子，" }, { t: "背後" }, { t: "藏著" }, { t: "對環境的" }, { t: "適應。", key: true }], breath: "//" }
+          ],
+          tts: "我這才恍然大悟，原來當地人選擇小一號的鞋子，背後藏著對環境的適應。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "適合別人的" }, { t: "「剛剛好」，" }, { t: "並不一定" }, { t: "適合自己。" }], breath: "//" },
+            { chunks: [{ t: "尊重" }, { t: "不同的" }, { t: "文化習慣，" }, { t: "才能" }, { t: "拓展" }, { t: "心靈的" }, { t: "視野。", key: true }], breath: "//" }
+          ],
+          tts: "適合別人的剛剛好，並不一定適合自己。尊重不同的文化習慣，才能拓展心靈的視野。"
+        }
+      ]
+    },
+    {
+      id: 8,
+      title: "狐假虎威",
+      icon: "🦊",
+      tips: "<strong>💡 本課重點與破音字正音：</strong><br>• 狐<strong>假</strong>（ㄐㄧㄚˇ）：借用之意讀三聲。<br>• 嚇<strong>唬</strong>（ㄏㄨˇ）：三聲唬。<br>• <strong>特教提示</strong>：對話以短詞素方框精確切開，引導學生變換語調扮演狐狸與老虎。",
+      sentences: [
+        {
+          units: [
+            { chunks: [{ t: "老虎" }, { t: "抓到了" }, { t: "一隻狐狸。" }], breath: "//" },
+            { chunks: [{ t: "狐狸" }, { t: "大聲說：" }], breath: "/" },
+            { chunks: [{ t: "「你不敢" }, { t: "吃我！" }], breath: "//" },
+            { chunks: [{ t: "天帝" }, { t: "命令我" }, { t: "管理百獸，", key: true }], breath: "/" },
+            { chunks: [{ t: "要是" }, { t: "吃了我，" }, { t: "就是" }, { t: "違背", key: true }, { t: "天帝的命令！" }], breath: "//" }
+          ],
+          tts: "老虎抓到了一隻狐狸。狐狸大聲說：你不敢吃我！天帝命令我管理百獸，要是吃了我，就是違背天帝的命令！"
+        },
+        {
+          units: [
+            { chunks: [{ t: "你如果" }, { t: "不信，" }, { t: "我" }, { t: "走在前面，" }, { t: "你" }, { t: "跟在後面，" }], breath: "//" },
+            { chunks: [{ t: "看看" }, { t: "百獸" }, { t: "見到我，" }, { t: "有誰" }, { t: "敢不逃跑呢？」" }], breath: "//" }
+          ],
+          tts: "你如果不信，我走在前面，你跟在後面，看看百獸見到我，有誰敢不逃跑呢？"
+        },
+        {
+          units: [
+            { chunks: [{ t: "老虎" }, { t: "以為" }, { t: "狐狸說的是真的，" }], breath: "/" },
+            { chunks: [{ t: "便" }, { t: "跟在" }, { t: "狐狸後面走。" }], breath: "//" },
+            { chunks: [{ t: "森林裡的" }, { t: "野獸們，" }, { t: "看見" }, { t: "威風凜凜的", key: true }, { t: "老虎，" }], breath: "//" },
+            { chunks: [{ t: "全都" }, { t: "嚇得" }, { t: "連忙逃跑。" }], breath: "//" }
+          ],
+          tts: "老虎以為狐狸說的是真的，便跟在狐狸後面走。森林裡的野獸們，看見威風凜凜的老虎，全都嚇得連忙逃跑。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "老虎" }, { t: "不知道" }, { t: "野獸害怕的是自己，" }], breath: "/" },
+            { chunks: [{ t: "還以為" }, { t: "大家" }, { t: "是真的害怕狐狸呢！" }], breath: "//" },
+            { chunks: [{ t: "這就是" }, { t: "藉著" }, { t: "別人的" }, { t: "威勢，", key: true }], breath: "/" },
+            { chunks: [{ t: "嚇唬人的" }, { t: "由來。" }], breath: "//" }
+          ],
+          tts: "老虎不知道野獸害怕的是自己，還以為大家是真的害怕狐狸呢！這就是藉著別人的威勢，嚇唬人的由來。"
+        }
+      ]
+    },
+    {
+      id: 9,
+      title: "空城計",
+      icon: "🏯",
+      tips: "<strong>💡 本課重點與破音字正音：</strong><br>• 戴著<strong>綸</strong>（ㄍㄨㄢ）巾：孔明頭巾讀 ㄍㄨㄢ。<br>• <strong>率</strong>（ㄕㄨㄞˋ）領大軍：帶隊讀四聲。<br>• <strong>特教提示</strong>：「綸巾」為超級地雷字，系統已校正為 ㄍㄨㄢ ㄐㄧㄣ，請指讀加強。",
+      sentences: [
+        {
+          units: [
+            { chunks: [{ t: "孔明" }, { t: "披著" }, { t: "鶴氅，", key: true }], breath: "/" },
+            { chunks: [{ t: "戴著" }, { t: "綸巾，", key: true }], breath: "//" },
+            { chunks: [{ t: "端坐在" }, { t: "城樓上，" }], breath: "/" },
+            { chunks: [{ t: "氣定神閒地", key: true }, { t: "焚香彈琴。" }], breath: "//" },
+            { chunks: [{ t: "城門" }, { t: "大開，" }, { t: "幾名老兵" }, { t: "正拿著掃帚，" }], breath: "//" },
+            { chunks: [{ t: "安靜地" }, { t: "在街上掃地。" }], breath: "//" }
+          ],
+          tts: "孔明披著鶴氅，戴著綸巾，端坐在城樓上，氣定神閒地焚香彈琴。城門大開，幾名老兵正拿著掃帚，安靜地在街上掃地。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "司馬懿" }, { t: "率領大軍" }, { t: "來到城下，" }, { t: "看見" }, { t: "這副" }, { t: "安詳的景象，" }], breath: "//" },
+            { chunks: [{ t: "心中" }, { t: "大生疑慮，" }, { t: "深怕" }, { t: "城內" }, { t: "埋伏著精兵，", key: true }], breath: "//" },
+            { chunks: [{ t: "連忙下令" }, { t: "全軍退兵！" }], breath: "//" }
+          ],
+          tts: "司馬懿率領大軍來到城下，看見這副安詳的景象，心中大生疑慮，深怕城內埋伏著精兵，連忙下令全軍退兵！"
+        },
+        {
+          units: [
+            { chunks: [{ t: "看見" }, { t: "敵軍撤退，" }, { t: "城內眾人" }, { t: "全都" }, { t: "驚嘆折服：" }], breath: "//" },
+            { chunks: [{ t: "「丞相" }, { t: "神機妙算，", key: true }], breath: "/" },
+            { chunks: [{ t: "真是" }, { t: "神鬼莫測呀！」", key: true }], breath: "//" },
+            { chunks: [{ t: "孔明" }, { t: "拍手大笑說：" }, { t: "「如果我是" }, { t: "司馬懿，" }], breath: "//" },
+            { chunks: [{ t: "就不會" }, { t: "輕率的退兵啊！」" }], breath: "/" },
+            { chunks: [{ t: "這正是" }, { t: "以膽識" }, { t: "與智慧，" }, { t: "化解危機的" }, { t: "空城計。" }], breath: "//" }
+          ],
+          tts: "看見敵軍撤退，城內眾人全都驚嘆折服：丞相神機妙算，真是神鬼莫測呀！孔明拍手大笑說：如果我是司馬懿，就不會輕率的退兵啊！這正是以膽識與智慧，化解危機的空城計。"
+        }
+      ]
+    },
+    {
+      id: 10,
+      title: "耶誕節",
+      icon: "🎄",
+      tips: "<strong>💡 本課重點與破音字正音：</strong><br>• 歲末<strong>降</strong>（ㄐㄧㄤˋ）雪：下雪讀四聲。<br>• <strong>薄</strong>（ㄅㄛˊ）暮時分：傍晚讀二聲。<br>• <strong>特教提示</strong>：單行完整句讓溫馨親情話語更易聚焦，減少長句造成的沮喪感。",
+      sentences: [
+        {
+          units: [
+            { chunks: [{ t: "歲末" }, { t: "降雪，" }], breath: "/" },
+            { chunks: [{ t: "耶誕節" }, { t: "快要臨近了。" }], breath: "//" },
+            { chunks: [{ t: "窗外" }, { t: "已是" }, { t: "薄暮時分，", key: true }], breath: "/" },
+            { chunks: [{ t: "房間裡的" }, { t: "爐火，" }, { t: "正燃燒得" }, { t: "劈啪作響。", key: true }], breath: "//" }
+          ],
+          tts: "歲末降雪，耶誕節快要臨近了。窗外已是薄暮時分，房間裡的爐火，正燃燒得劈啪作響。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "因為" }, { t: "母親不在家，" }, { t: "孩子們" }, { t: "圍坐在客廳" }, { t: "隨意閒聊。" }], breath: "//" },
+            { chunks: [{ t: "今天" }, { t: "最大的話題，" }, { t: "便是" }, { t: "母親曾說，" }], breath: "//" },
+            { chunks: [{ t: "今年" }, { t: "因為貧困，" }, { t: "沒辦法" }, { t: "送他們" }, { t: "任何禮物。" }], breath: "//" }
+          ],
+          tts: "因為母親不在家，孩子們圍坐在客廳隨意閒聊。今天最大的話題，便是母親曾說，今年因為貧困，沒辦法送他們任何禮物。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "四姐妹" }, { t: "雖然感到" }, { t: "沮喪，", key: true }], breath: "/" },
+            { chunks: [{ t: "但" }, { t: "彼此關心的" }, { t: "話語，" }, { t: "與" }, { t: "溫暖的笑容，" }], breath: "//" },
+            { chunks: [{ t: "驅散了" }, { t: "室內的寒意。" }], breath: "//" },
+            { chunks: [{ t: "雖然" }, { t: "沒有" }, { t: "豐盛的物質，" }], breath: "/" },
+            { chunks: [{ t: "但" }, { t: "家人間" }, { t: "真摯的", key: true }, { t: "愛與祝福，" }, { t: "讓" }, { t: "這個寒冷的冬夜，" }], breath: "//" },
+            { chunks: [{ t: "充滿了" }, { t: "無比的" }, { t: "溫馨。", key: true }], breath: "//" }
+          ],
+          tts: "四姐妹雖然感到沮喪，但彼此關心的話語，與溫暖的笑容，驅散了室內的寒意。雖然沒有豐盛的物質，但家人間真摯的愛與祝福，讓這個寒冷的冬夜，充滿了無比的溫馨。"
+        }
+      ]
+    },
+    {
+      id: 11,
+      title: "下午茶風波",
+      icon: "☕",
+      tips: "<strong>💡 本課重點與破音字正音：</strong><br>• 有<strong>模</strong>（ㄇㄛˊ）有樣：審定音讀二聲。<br>• <strong>當</strong>（ㄉㄤˋ）成果汁：看作讀四聲。<br>• <strong>特教提示</strong>：「[不一會兒工夫]」連讀為ㄅㄨˋ ㄧ ㄏㄨㄟˇ ㄦ ㄍㄨㄥ ˙ㄈㄨ，注意兒化自然換氣。",
+      sentences: [
+        {
+          units: [
+            { chunks: [{ t: "十月的" }, { t: "綠屋，" }, { t: "楓紅層層，", key: true }], breath: "/" },
+            { chunks: [{ t: "美景如畫。" }], breath: "//" },
+            { chunks: [{ t: "這天，" }, { t: "安妮" }, { t: "正式邀請" }, { t: "戴安娜，" }, { t: "到家裡" }, { t: "喝下午茶，" }], breath: "//" },
+            { chunks: [{ t: "她搬出" }, { t: "所有的" }, { t: "點心與果汁，" }, { t: "熱情招待。", key: true }], breath: "//" }
+          ],
+          tts: "十月的綠屋，楓紅層層，美景如畫。這天，安妮正式邀請戴安娜，到家裡喝下午茶，她搬出所有的點心與果汁，熱情招待。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "一開始" }, { t: "兩人" }, { t: "有模有樣地，", key: true }], breath: "/" },
+            { chunks: [{ t: "學著大人" }, { t: "互相問候，" }, { t: "不一會兒工夫，" }], breath: "//" },
+            { chunks: [{ t: "便恢復" }, { t: "平日" }, { t: "活潑的樣子。" }], breath: "//" }
+          ],
+          tts: "一開始兩人有模有樣地，學著大人互相問候，不一會兒工夫，便恢復平日活潑的樣子。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "「安妮，" }], breath: "/" },
+            { chunks: [{ t: "草莓汁" }, { t: "真好喝！」" }], breath: "//" },
+            { chunks: [{ t: "戴安娜" }, { t: "一邊欣賞" }, { t: "它的美麗色澤，" }], breath: "/" },
+            { chunks: [{ t: "一邊" }, { t: "開心享受，" }, { t: "這段美好的" }, { t: "下午茶時光。" }], breath: "//" }
+          ],
+          tts: "安妮，草莓汁真好喝！戴安娜一邊欣賞它的美麗色澤，一邊開心享受，這段美好的下午茶時光。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "雖然" }, { t: "過程中，" }, { t: "誤把葡萄酒" }, { t: "當成果汁，" }], breath: "//" },
+            { chunks: [{ t: "引發了一場" }, { t: "意外風波，", key: true }], breath: "/" },
+            { chunks: [{ t: "但兩人" }, { t: "深厚的", key: true }, { t: "友誼，" }, { t: "最終" }, { t: "化解了誤會，" }], breath: "//" },
+            { chunks: [{ t: "留下了難忘的" }, { t: "成長記憶。" }], breath: "//" }
+          ],
+          tts: "雖然過程中，誤把葡萄酒當成果汁，引發了一場意外風波，但兩人深厚的友誼，最終化解了誤會，留下了難忘的成長記憶。"
+        }
+      ]
+    },
+    {
+      id: 12,
+      title: "橘子",
+      icon: "🍊",
+      tips: "<strong>💡 本課重點與破音字正音：</strong><br>• <strong>朝</strong>（ㄔㄠˊ）月台：向著讀二聲。<br>• <strong>劃</strong>（ㄏㄨㄚˋ）出弧線：四聲劃線。<br>• <strong>特教提示</strong>：讀到「[劃出美麗的] [弧線]」時引導學生手在空中畫拋物線，增加身體動覺記憶。",
+      sentences: [
+        {
+          units: [
+            { chunks: [{ t: "冬天的傍晚，" }, { t: "我" }, { t: "疲倦地" }, { t: "坐在車廂裡。" }], breath: "//" },
+            { chunks: [{ t: "一個" }, { t: "神色慌張的" }, { t: "女孩走進來，" }, { t: "令人感到" }, { t: "心灰意冷。", key: true }], breath: "//" }
+          ],
+          tts: "冬天的傍晚，我疲倦地坐在車廂裡。一個神色慌張的女孩走進來，令人感到心灰意冷。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "當火車" }, { t: "駛出" }, { t: "暗黑的隧道，" }, { t: "陽光" }, { t: "瞬間" }, { t: "灑滿了車廂。" }], breath: "//" },
+            { chunks: [{ t: "窗邊的女孩" }, { t: "努力" }, { t: "推開車窗，" }, { t: "將" }, { t: "五、六個" }, { t: "鮮黃燦爛的", key: true }, { t: "橘子，" }], breath: "//" },
+            { chunks: [{ t: "朝" }, { t: "月台上" }, { t: "揮手的小男孩，" }, { t: "拋了過去。" }], breath: "//" }
+          ],
+          tts: "當火車駛出暗黑的隧道，陽光瞬間灑滿了車廂。窗邊的女孩努力推開車窗，將五、六個鮮黃燦爛的橘子，朝月台上揮手的小男孩，拋了過去。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "那一刻，" }, { t: "鮮黃的橘子" }, { t: "在空中，" }, { t: "劃出美麗的", key: true }, { t: "弧線，", key: true }], breath: "//" },
+            { chunks: [{ t: "溫暖的" }, { t: "金黃色光芒，" }, { t: "照亮了" }, { t: "我的心。" }], breath: "//" }
+          ],
+          tts: "那一刻，鮮黃的橘子在空中，劃出美麗的弧線，溫暖的金黃色光芒，照亮了我的心。"
+        },
+        {
+          units: [
+            { chunks: [{ t: "女孩" }, { t: "對弟弟" }, { t: "無私的關愛，" }, { t: "讓車廂裡" }, { t: "充斥著溫情，" }], breath: "//" },
+            { chunks: [{ t: "我心中" }, { t: "所有的" }, { t: "疲倦" }, { t: "與" }, { t: "陰鬱，", key: true }, { t: "都" }, { t: "一掃而空。", key: true }], breath: "//" }
+          ],
+          tts: "女孩對弟弟無私的關愛，讓車廂裡充斥著溫情，我心中所有的疲倦與陰鬱，都一掃而空。"
+        }
+      ]
+    }
+  ];
+
+  // 狀態管理變數
+  let currentLessonIndex = 0;
+  let currentMode = 'learn'; // 'learn' 或 'test'
+  const synth = window.speechSynthesis;
+  let isPlaying = false;
+  let flatUnitList = []; // 平坦化朗讀單元清單
+  let currentUnitIdx = 0;
+  let timerId = null;
+  const markedSet = new Set(); // 記錄當前課次標記不會讀的詞素
+
+  // DOM 節點
+  const lessonGrid = document.getElementById('lessonGrid');
+  const lessonHeaderTitle = document.getElementById('lessonHeaderTitle');
+  const readingBoard = document.getElementById('readingBoard');
+  const lessonTips = document.getElementById('lessonTips');
+  const btnPlay = document.getElementById('btnPlay');
+  const btnStop = document.getElementById('btnStop');
+  const btnClearMarks = document.getElementById('btnClearMarks');
+  const speedRange = document.getElementById('speedRange');
+  const speedVal = document.getElementById('speedVal');
+  const tabLearn = document.getElementById('tabLearn');
+  const tabTest = document.getElementById('tabTest');
+  const reviewPanel = document.getElementById('reviewPanel');
+  const markedList = document.getElementById('markedList');
+
+  // 全冊 1-12 課多音字/破音字防錯校正字典 (TTS Pronunciation Fix)
+  function fixPronunciation(rawText) {
+    let text = rawText;
+    text = text.replace(/為自己/g, '位自己')
+               .replace(/也為/g, '也位')
+               .replace(/興奮/g, '星奮')
+               .replace(/緊張得/g, '緊張的')
+               .replace(/毋/g, '無')
+               .replace(/切記/g, '妾記')
+               .replace(/多做多得/g, '多做多德')
+               .replace(/油炸/g, '油扎')
+               .replace(/風靡/g, '風米')
+               .replace(/有勁/g, '有進')
+               .replace(/夾腳拖/g, '頰腳拖')
+               .replace(/溼答答/g, '溼大大')
+               .replace(/綸巾/g, '關巾')
+               .replace(/率領/g, '帥領')
+               .replace(/薄暮/g, '伯暮')
+               .replace(/降雪/g, '將雪')
+               .replace(/當成果汁/g, '盪成果汁')
+               .replace(/有模有樣/g, '有摩有樣')
+               .replace(/劃出/g, '話出')
+               .replace(/朝月台/g, '潮月台');
+    return text;
+  }
+
+  // 初始化 12 課按鈕
+  allLessons.forEach((lesson, index) => {
+    const btn = document.createElement('div');
+    btn.className = `lesson-btn ${index === 0 ? 'active' : ''}`;
+    btn.id = `btn-lesson-${index}`;
+    btn.innerHTML = `<span class="btn-num">第 ${lesson.id} 課</span><span class="btn-title">${lesson.icon} ${lesson.title}</span>`;
+    
+    btn.addEventListener('click', () => {
+      if (currentLessonIndex === index) return;
+      switchLesson(index);
+    });
+
+    lessonGrid.appendChild(btn);
+  });
+
+  // 切換課次
+  function switchLesson(index) {
+    stopReading();
+    markedSet.clear();
+    document.querySelectorAll('.lesson-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`btn-lesson-${index}`).classList.add('active');
+    currentLessonIndex = index;
+    renderCurrentLesson();
+    updateReviewPanel();
+  }
+
+  // 渲染當前課文（一句一行排版）
+  function renderCurrentLesson() {
+    const lesson = allLessons[currentLessonIndex];
+    lessonHeaderTitle.textContent = `${lesson.icon} 第 ${lesson.id} 課《${lesson.title}》`;
+    lessonTips.innerHTML = lesson.tips;
+    readingBoard.innerHTML = '';
+    flatUnitList = [];
+
+    let globalUnitCount = 0;
+
+    lesson.sentences.forEach((sentence, sIdx) => {
+      // 每一完整句子獨立為一整行
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'sentence-row';
+      rowDiv.id = `sentence-${sIdx}`;
+
+      sentence.units.forEach((unit) => {
+        const unitId = `unit_${globalUnitCount}`;
+        const unitObj = {
+          id: unitId,
+          tts: unit.tts || unit.chunks.map(c => c.t).join(''),
+          breath: unit.breath,
+          chunks: unit.chunks,
+          chunkEls: []
+        };
+
+        unit.chunks.forEach((chunk) => {
+          const span = document.createElement('span');
+          span.className = `chunk ${chunk.key ? 'key-vocab' : ''}`;
+          span.textContent = chunk.t;
+
+          const cleanWord = chunk.t.replace(/[「」『』──…！，。：；、]/g, '');
+          if (markedSet.has(cleanWord)) {
+            span.classList.add('marked');
+          }
+
+          // 點擊事件分流
+          span.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentMode === 'learn') {
+              stopReading();
+              playSingleWord(span, chunk.t);
+            } else {
+              toggleMarkWord(span, chunk.t);
+            }
+          });
+
+          rowDiv.appendChild(span);
+          unitObj.chunkEls.push(span);
+        });
+
+        // 換氣停頓符號
+        if (unit.breath) {
+          const bSpan = document.createElement('span');
+          bSpan.className = `breath ${unit.breath === '//' ? 'breath-long' : 'breath-short'}`;
+          bSpan.textContent = unit.breath;
+          rowDiv.appendChild(bSpan);
+        }
+
+        flatUnitList.push(unitObj);
+        globalUnitCount++;
+      });
+
+      readingBoard.appendChild(rowDiv);
+    });
+  }
+
+  // 切換模式（學習 vs 自我檢核）
+  window.switchMode = function(mode) {
+    stopReading();
+    currentMode = mode;
+    document.body.className = `mode-${mode}`;
+
+    if (mode === 'learn') {
+      tabLearn.classList.add('active');
+      tabTest.classList.remove('active');
+      btnPlay.style.display = 'inline-flex';
+      btnClearMarks.style.display = 'none';
+      reviewPanel.classList.remove('show');
+    } else {
+      tabTest.classList.add('active');
+      tabLearn.classList.remove('active');
+      btnPlay.style.display = 'none';
+      btnClearMarks.style.display = 'inline-flex';
+      updateReviewPanel();
+    }
+  };
+
+  // 做記號 / 取消記號
+  function toggleMarkWord(span, text) {
+    const cleanWord = text.replace(/[「」『』──…！，。：；、]/g, '');
+    if (!cleanWord) return;
+
+    if (span.classList.contains('marked')) {
+      span.classList.remove('marked');
+      markedSet.delete(cleanWord);
+    } else {
+      span.classList.add('marked');
+      markedSet.add(cleanWord);
+    }
+    updateReviewPanel();
+  }
+
+  // 清除記號
+  window.clearAllMarks = function() {
+    markedSet.clear();
+    document.querySelectorAll('.chunk.marked').forEach(el => el.classList.remove('marked'));
+    updateReviewPanel();
+  };
+
+  // 更新卡關生字複習面板
+  function updateReviewPanel() {
+    markedList.innerHTML = '';
+    if (markedSet.size === 0 || currentMode !== 'test') {
+      reviewPanel.classList.remove('show');
+      return;
+    }
+
+    reviewPanel.classList.add('show');
+    markedSet.forEach(word => {
+      const btn = document.createElement('button');
+      btn.className = 'review-word-btn';
+      btn.innerHTML = `🔊 ${word}`;
+      btn.addEventListener('click', () => {
+        playSingleWord(null, word);
+      });
+      markedList.appendChild(btn);
+    });
+  }
+
+  // 速度調整監聽
+  speedRange.addEventListener('input', (e) => {
+    speedVal.textContent = parseFloat(e.target.value).toFixed(2) + 'x';
+  });
+
+  function getRate() {
+    return parseFloat(speedRange.value);
+  }
+
+  function clearHighlights() {
+    document.querySelectorAll('.chunk.active').forEach(el => el.classList.remove('active'));
+  }
+
+  function stopReading() {
+    isPlaying = false;
+    if (synth.speaking) synth.cancel();
+    if (timerId) clearTimeout(timerId);
+    clearHighlights();
+    btnPlay.textContent = '▶ 0.5x 全文連貫朗讀';
+  }
+
+  btnStop.addEventListener('click', stopReading);
+
+  // 單詞點讀發音
+  function playSingleWord(span, text) {
+    clearHighlights();
+    if (span) span.classList.add('active');
+
+    let clean = text.replace(/[「」『』──…！，。：；、]/g, '');
+    clean = fixPronunciation(clean);
+
+    const utter = new SpeechSynthesisUtterance(clean || text);
+    utter.lang = 'zh-TW';
+    utter.rate = getRate();
+    utter.onend = () => { if (span) span.classList.remove('active'); };
+    utter.onerror = () => { if (span) span.classList.remove('active'); };
+    synth.speak(utter);
+  }
+
+  // 全文連貫朗讀
+  btnPlay.addEventListener('click', () => {
+    if (isPlaying) {
+      stopReading();
+      return;
+    }
+    stopReading();
+    isPlaying = true;
+    btnPlay.textContent = '⏸ 暫停朗讀';
+    currentUnitIdx = 0;
+    playNextUnit();
+  });
+
+  function playNextUnit() {
+    if (!isPlaying || currentUnitIdx >= flatUnitList.length) {
+      stopReading();
+      return;
+    }
+
+    const unit = flatUnitList[currentUnitIdx];
+    const chunkSpans = unit.chunkEls;
+
+    clearHighlights();
+
+    // 依語速計算詞素發光時序
+    const fixedTTS = fixPronunciation(unit.tts);
+    const textLen = fixedTTS.length;
+    const estimatedDurationMs = (textLen / (3.0 * getRate())) * 1000;
+    const stepTime = estimatedDurationMs / unit.chunks.length;
+
+    unit.chunks.forEach((_, idx) => {
+      setTimeout(() => {
+        if (!isPlaying) return;
+        chunkSpans.forEach(s => s.classList.remove('active'));
+        if (chunkSpans[idx]) chunkSpans[idx].classList.add('active');
+      }, idx * stepTime);
+    });
+
+    const utter = new SpeechSynthesisUtterance(fixedTTS);
+    utter.lang = 'zh-TW';
+    utter.rate = getRate();
+
+    utter.onend = () => {
+      chunkSpans.forEach(s => s.classList.remove('active'));
+
+      // 換氣停頓控制：/ 約 280ms, // 約 680ms (隨語速等比例調節)
+      const pauseTime = unit.breath === '//' ? (680 / getRate()) : (280 / getRate());
+
+      timerId = setTimeout(() => {
+        currentUnitIdx++;
+        playNextUnit();
+      }, pauseTime);
+    };
+
+    utter.onerror = () => {
+      chunkSpans.forEach(s => s.classList.remove('active'));
+      currentUnitIdx++;
+      playNextUnit();
+    };
+
+    synth.speak(utter);
+  }
+
+  // 初始載入第一課
+  renderCurrentLesson();
+</script>
+
+</body>
+</html>
